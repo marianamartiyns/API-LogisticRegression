@@ -91,7 +91,7 @@ To simplify user interaction, a Streamlit web application was built, allowing in
 - API request and response visualization
 - Styled result display with probability percentage and risk category (Low and High)
 
-![App Demo](gif_app.gif)
+![App Demo](fastAPI/gif_app.gif)
 
 
 > [!NOTE]  
