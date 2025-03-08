@@ -1,17 +1,15 @@
 import streamlit as st
 import requests
 
-# Função para fazer a requisição para a API
+# requisição para a API
 def predict_churn(data):
     url = "http://127.0.0.1:8000/predict"
     response = requests.post(url, json=data)
     return response.json()
 
-# Título da página
 # st.title("🔍 Previsão de Churn - Desligamento do Cliente")
 st.subheader("🔍 Previsão de Churn - Desligamento do Cliente")
 
-# Criando campos para entrada de dados com descrições mais intuitivas
 gender = st.radio("Selecione o gênero do cliente:", ["Masculino", "Feminino"])
 senior_citizen = st.radio("O cliente tem 65 anos ou mais?", ["Não", "Sim"])
 partner = st.radio("O cliente tem cônjuge/parceiro(a)?", ["Não", "Sim"])
@@ -28,7 +26,6 @@ streaming_movies = st.radio("O cliente usa filmes por streaming?", ["Não", "Sim
 contract = st.selectbox("Qual o tipo de contrato do cliente?", ["Mês a Mês", "1 Ano", "2 Anos"])
 paperless_billing = st.radio("O cliente usa cobrança sem papel?", ["Não", "Sim"])
 
-# Converter valores para o formato esperado pela API
 data = {
     "Gender": 1 if gender == "Masculino" else 0,
     "Senior Citizen": 1 if senior_citizen == "Sim" else 0,
@@ -47,20 +44,15 @@ data = {
     "Paperless Billing": 1 if paperless_billing == "Sim" else 0
 }
 
-# Quando o botão é pressionado
 if st.button("📊 Prever Churn"):
     prediction = predict_churn(data)
     
-    # Formatando a probabilidade como percentual
     probabilidade = prediction["probabilidade_churn"] * 100
     previsao = prediction["previsao"]
     
     st.markdown("### 🔎 Resultado da Previsão")
-    
-    # Criando um card visual para exibir o resultado
-    st.metric(label="💡 Probabilidade de Churn", value=f"{probabilidade:.2f}%")
-    
-    # Exibindo a previsão de forma destacada
+    st.metric(label="Probabilidade de Churn", value=f"{probabilidade:.2f}%")
+
     if previsao == "Baixo risco de churn":
         st.success(f"✅ {previsao}")
     else:
