@@ -1,98 +1,101 @@
-# 📊 Multivariate - Logistic Regression
+# 📊 Customer Churn Prediction - Multivariate Logistic Regression
 
-> Data analysis, modeling, and deployment of a logistic regression model for churn prediction, integrating a FastAPI backend and a Streamlit frontend.
+> End-to-end machine learning project with logistic regression to predict customer churn, using FastAPI for the backend and Streamlit for a modern, interactive frontend.
 
-## 📋 Description
+### 📋 Project Overview
 
-This project aims to predict the likelihood of churn (service cancellation) among customers of a fictional telecommunications company using data preprocessing techniques and predictive modeling. A dataset containing information on over 7,000 customers was used, with 33 variables that include demographic characteristics, details about the services subscribed, and billing history.
+This project predicts the likelihood of **customer churn** (service cancellation) for a telecommunications company. Using customer service, billing, and demographic data, it estimates whether a customer is at high risk of leaving.
 
-## 🧩 Data Cleaning, Data Wrangling, and Model
+- Cleaned dataset with over 7,000 customers
+- More than 30 input features
+- Integrated machine learning + API + frontend interface
 
-- [x] Drop constant and non-useful columns for modeling  
-- [x] Standardization of numerical features  
-- [x] One-hot encoding of categorical features  
-- [x] Train-test split of data  
-- [x] Logistic regression model (2 versions)  
-- [x] Recursive Feature Elimination (RFE)  
-- [x] Results & Validation of Results (Confusion Matrix, Accuracy and Precision, Roc Curve, AUC Score) 
+### 🧪 Model Pipeline
 
-## 🚀 API (FastAPI)
+- [x] Feature selection and cleaning
+- [x] One-hot encoding for categorical variables
+- [x] Standardization of numerical features
+- [x] Recursive Feature Elimination (RFE)
+- [x] Logistic Regression training
+- [x] Model evaluation (Confusion Matrix, Accuracy, Precision, AUC)
+- [x] Model serialization with `pickle`
 
-To make predictions accessible, a FastAPI service was developed to expose the model as an endpoint.
+### 🚀 Backend - FastAPI
 
-### 🔧 How to Run the API
+The model is served using a FastAPI backend for real-time predictions.
+
+#### Running the API
 
 1. Install dependencies:
-   ```sh
+   ```bash
    pip install fastapi uvicorn scikit-learn pandas numpy
    ```
-2. Start the API:
-   ```sh
+
+2. Run the API:
+   ```bash
    uvicorn main:app --reload
    ```
-3. The API will be available at: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-4. Interactive Swagger documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
-### 📡 API Endpoint
+3. Access the Swagger docs at:
+   - [http://localhost:8000/docs](http://localhost:8000/docs)
 
-- **POST /predict**
-  - Input: JSON object with customer data
-  - Output: JSON object with churn probability and risk category
+#### API Endpoint
 
-Example request:
+- **POST** `/predict`
+  - **Input**: JSON with customer attributes
+  - **Output**: Churn probability and prediction (0 = no churn, 1 = churn)
 
-```json
-{
-    "Gender": 1,
-    "Senior Citizen": 0,
-    "Partner": 1,
-    "Dependents": 0,
-    "Tenure Months": 12,
-    "Phone Service": 1,
-    "Multiple Lines": 0,
-    "Internet Service": 1,
-    "Online Security": 0,
-    "Online Backup": 1,
-    "Tech Support": 1,
-    "Streaming TV": 0,
-    "Streaming Movies": 1,
-    "Contract": 1,
-    "Paperless Billing": 1
-}
-```
-
-Example response:
+#### Example Request:
 
 ```json
 {
-    "probabilidade_churn": 0.0375,
-    "previsao": "Baixo risco de churn"
+  "Contract": 0,
+  "Tech_Support": 1,
+  "Tenure_Months": 10,
+  "Online_Security": 2,
+  "Internet_Service": 1,
+  "Device_Protection": 0,
+  "Payment_Method": 2,
+  "Monthly_Charges": 85.90,
+  "Online_Backup": 0,
+  "Dependents": 0,
+  "Streaming_TV": 1,
+  "Streaming_Movies": 1
 }
 ```
 
-## 🎨 Frontend (Streamlit)
+#### Example Response:
 
-To simplify user interaction, a Streamlit web application was built, allowing intuitive input and visualization of predictions.
+```json
+{
+  "churn_probability": 0.742,
+  "prediction": 1
+}
+```
 
-### 🔧 How to Run the Streamlit App
+### 🎨 Frontend - Streamlit
+
+An interactive frontend built with Streamlit allows users to input customer data and view real-time predictions in an intuitive and styled interface.
+
+#### Running the App
 
 1. Install dependencies:
-   ```sh
+   ```bash
    pip install streamlit requests
    ```
-2. Run the app:
-   ```sh
+
+2. Launch the app:
+   ```bash
    streamlit run app.py
    ```
 
-### 🖥 Features
+#### App Features
 
-- Interactive input fields for customer attributes
-- API request and response visualization
-- Styled result display with probability percentage and risk category (Low and High)
-
-![App Demo](fastAPI/gif_app.gif)
-
+- User-friendly input forms with radio buttons, sliders, and dropdowns
+- Clean two-column layout for better organization
+- Real-time API communication
+- Styled result output with probability, colors, and risk icons (🟢 / 🔴)
+- Error handling and loading animations
 
 > [!NOTE]  
 > The code descriptions are in Portuguese 🇧🇷, although the variables and code are in English.
