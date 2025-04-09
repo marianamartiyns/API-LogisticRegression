@@ -1,40 +1,33 @@
-import pickle
-import pandas as pd
-import statsmodels.api as sm
+# app/main.py
 from fastapi import FastAPI
+from pydantic import BaseModel
+import pickle
+import numpy as np
+
+# Carregando o modelo
+with open("model/logm2.pkl", "rb") as f:
+    model = pickle.load(f)
 
 app = FastAPI()
-with open("model/logm2.pkl", "rb") as f:
-    modelo = pickle.load(f)
 
-# features que o modelo espera
-FEATURES = [
-    "Gender", "Senior Citizen", "Partner", "Dependents", "Tenure Months",
-    "Phone Service", "Multiple Lines", "Internet Service", "Online Security",
-    "Online Backup", "Tech Support", "Streaming TV", "Streaming Movies",
-    "Contract", "Paperless Billing"
-]
+# Estrutura da entrada
+class CustomerData(BaseModel):
+    Contract: int
+    Tech_Support: int
+    Tenure_Months: int
+    Online_Security: int
+    Internet_Service: int
+    Device_Protection: int
+    Payment_Method: int
+    Monthly_Charges: float
+    Online_Backup: int
+    Dependents: int
+    Streaming_TV: int
+    Streaming_Movies: int
 
 @app.post("/predict/")
-def predict(data: dict):
-    try:
-        # Verificando se todas as features foram enviadas
-        missing_features = [f for f in FEATURES if f not in data]
-        if missing_features:
-            return {"error": f"Faltando as seguintes features: {missing_features}"}
-    
-        df = pd.DataFrame([data])
-        df = df[FEATURES]
-        df = sm.add_constant(df, has_constant="add")
-
-        # Fazendo a previsão da probabilidade de churn
-        churn_prob = modelo.predict(df)[0] 
-        churn_prediction = "Alto risco de churn" if churn_prob > 0.5 else "Baixo risco de churn"
-
-        return {
-            "probabilidade_churn": round(churn_prob, 4),
-            "previsao": churn_prediction
-        }
-
-    except Exception as e:
-        return {"error": str(e)}
+def predict(data: CustomerData):
+    features = np.array([[v for v in data.dict().values()]])
+    proba = model.predict_proba(features)[0][1]
+    prediction = int(proba > 0.5)
+    return {"churn_probability": proba, "prediction": prediction}

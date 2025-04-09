@@ -1,59 +1,65 @@
+# streamlit_app/app.py
 import streamlit as st
 import requests
 
-# requisição para a API
-def predict_churn(data):
-    url = "http://127.0.0.1:8000/predict"
-    response = requests.post(url, json=data)
-    return response.json()
+st.set_page_config(page_title="Previsão de Churn", layout="wide")
 
-# st.title("🔍 Previsão de Churn - Desligamento do Cliente")
-st.subheader("🔍 Previsão de Churn - Desligamento do Cliente")
+st.markdown("""
+    <h1 style='text-align: center; color: #4CA1FF;'>🔍 Previsão de Churn - Desligamento do Cliente</h1>
+    <p style='text-align: center; color: gray;'>Preencha os dados do cliente para prever a probabilidade de churn.</p>
+    <hr style='border: 1px solid #4CA1FF;'/>
+""", unsafe_allow_html=True)
 
-gender = st.radio("Selecione o gênero do cliente:", ["Masculino", "Feminino"])
-senior_citizen = st.radio("O cliente tem 65 anos ou mais?", ["Não", "Sim"])
-partner = st.radio("O cliente tem cônjuge/parceiro(a)?", ["Não", "Sim"])
-dependents = st.radio("O cliente tem dependentes?", ["Não", "Sim"])
-tenure_months = st.slider("Há quantos meses o cliente é assinante?", 1, 72, 12)
-phone_service = st.radio("O cliente tem serviço de telefone?", ["Não", "Sim"])
-multiple_lines = st.radio("O cliente tem múltiplas linhas telefônicas?", ["Não", "Sim"])
-internet_service = st.radio("O cliente tem serviço de internet?", ["Não", "Sim"])
-online_security = st.radio("O cliente tem segurança online?", ["Não", "Sim"])
-online_backup = st.radio("O cliente tem serviço de backup online?", ["Não", "Sim"])
-tech_support = st.radio("O cliente tem suporte técnico?", ["Não", "Sim"])
-streaming_tv = st.radio("O cliente usa TV por streaming?", ["Não", "Sim"])
-streaming_movies = st.radio("O cliente usa filmes por streaming?", ["Não", "Sim"])
-contract = st.selectbox("Qual o tipo de contrato do cliente?", ["Mês a Mês", "1 Ano", "2 Anos"])
-paperless_billing = st.radio("O cliente usa cobrança sem papel?", ["Não", "Sim"])
+with st.form("form_churn"):
+    col1, col2 = st.columns(2)
 
-data = {
-    "Gender": 1 if gender == "Masculino" else 0,
-    "Senior Citizen": 1 if senior_citizen == "Sim" else 0,
-    "Partner": 1 if partner == "Sim" else 0,
-    "Dependents": 1 if dependents == "Sim" else 0,
-    "Tenure Months": tenure_months,
-    "Phone Service": 1 if phone_service == "Sim" else 0,
-    "Multiple Lines": 1 if multiple_lines == "Sim" else 0,
-    "Internet Service": 1 if internet_service == "Sim" else 0,
-    "Online Security": 1 if online_security == "Sim" else 0,
-    "Online Backup": 1 if online_backup == "Sim" else 0,
-    "Tech Support": 1 if tech_support == "Sim" else 0,
-    "Streaming TV": 1 if streaming_tv == "Sim" else 0,
-    "Streaming Movies": 1 if streaming_movies == "Sim" else 0,
-    "Contract": 1 if contract == "1 Ano" else 2 if contract == "2 Anos" else 0,
-    "Paperless Billing": 1 if paperless_billing == "Sim" else 0
-}
+    with col1:
+        Contract = st.selectbox("📄 Tipo de Contrato", [0, 1, 2], format_func=lambda x: ["Mensal", "1 ano", "2 anos"][x])
+        Tech_Support = st.radio("🛠️ Suporte Técnico", [0, 1], format_func=lambda x: "Sim" if x else "Não")
+        Tenure_Months = st.slider("⏳ Tempo de permanência (meses)", 0, 72, step=1)
+        Online_Security = st.selectbox("🔐 Segurança Online", [0, 1, 2], format_func=lambda x: ["Não", "Sim", "Sem internet"][x])
+        Internet_Service = st.selectbox("🌐 Tipo de Internet", [0, 1, 2], format_func=lambda x: ["DSL", "Fibra", "Sem internet"][x])
+        Monthly_Charges = st.number_input("💰 Valor Mensal (R$)", 0.0, 200.0, step=1.0)
 
-if st.button("📊 Prever Churn"):
-    prediction = predict_churn(data)
-    
-    probabilidade = prediction["probabilidade_churn"] * 100
-    previsao = prediction["previsao"]
-    
-    st.markdown("### 🔎 Resultado da Previsão")
-    st.metric(label="Probabilidade de Churn", value=f"{probabilidade:.2f}%")
+    with col2:
+        Device_Protection = st.radio("🛡️ Proteção de Dispositivo", [0, 1], format_func=lambda x: "Sim" if x else "Não")
+        Payment_Method = st.selectbox("💳 Método de Pagamento", [0, 1, 2, 3],
+                                      format_func=lambda x: ["Cartão crédito", "Fatura", "Cartão débito", "Transferência"][x])
+        Online_Backup = st.selectbox("☁️ Backup Online", [0, 1, 2], format_func=lambda x: ["Não", "Sim", "Sem internet"][x])
+        Dependents = st.radio("👨‍👩‍👧 Dependentes", [0, 1], format_func=lambda x: "Sim" if x else "Não")
+        Streaming_TV = st.radio("📺 Streaming de TV", [0, 1], format_func=lambda x: "Sim" if x else "Não")
+        Streaming_Movies = st.radio("🎬 Streaming de Filmes", [0, 1], format_func=lambda x: "Sim" if x else "Não")
 
-    if previsao == "Baixo risco de churn":
-        st.success(f"✅ {previsao}")
-    else:
-        st.error(f"❌ {previsao}")
+    submitted = st.form_submit_button("🔎 Prever Churn")
+
+    if submitted:
+        input_data = {
+            "Contract": Contract,
+            "Tech_Support": Tech_Support,
+            "Tenure_Months": Tenure_Months,
+            "Online_Security": Online_Security,
+            "Internet_Service": Internet_Service,
+            "Device_Protection": Device_Protection,
+            "Payment_Method": Payment_Method,
+            "Monthly_Charges": Monthly_Charges,
+            "Online_Backup": Online_Backup,
+            "Dependents": Dependents,
+            "Streaming_TV": Streaming_TV,
+            "Streaming_Movies": Streaming_Movies
+        }
+
+        with st.spinner("⏳ Enviando dados para o modelo..."):
+            try:
+                response = requests.post("http://localhost:8000/predict/", json=input_data)
+                if response.status_code == 200:
+                    result = response.json()
+                    prob = result["churn_probability"]
+                    st.success(f"✅ Probabilidade de Churn: **{prob:.2%}**")
+                    if prob > 0.5:
+                        st.markdown("<h3 style='color: red;'>⚠️ Alta probabilidade de desligamento.</h3>", unsafe_allow_html=True)
+                    else:
+                        st.markdown("<h3 style='color: #068062;'>🟢 Baixa probabilidade de desligamento.</h3>", unsafe_allow_html=True)
+                else:
+                    st.error("Erro ao obter resposta da API.")
+            except Exception as e:
+                st.error(f"Erro ao conectar com a API: {e}")
