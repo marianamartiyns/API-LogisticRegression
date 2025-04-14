@@ -15,7 +15,6 @@ This project predicts the likelihood of **customer churn** (service cancellation
 - [x] Feature selection and cleaning
 - [x] One-hot encoding for categorical variables
 - [x] Standardization of numerical features
-- [x] Recursive Feature Elimination (RFE)
 - [x] Logistic Regression training
 - [x] Model evaluation (Confusion Matrix, Accuracy, Precision, AUC)
 - [x] Model serialization with `pickle`
