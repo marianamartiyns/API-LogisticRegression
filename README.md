@@ -95,6 +95,7 @@ An interactive frontend built with Streamlit allows users to input customer data
 - Real-time API communication
 - Styled result output with probability, colors, and risk icons (🟢 / 🔴)
 - Error handling and loading animations
+![app](app.gif)
 
 > [!NOTE]  
 > The code descriptions are in Portuguese 🇧🇷, although the variables and code are in English.
