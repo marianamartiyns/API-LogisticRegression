@@ -125,7 +125,7 @@ with tabs[1]:
 
     # Paleta de cores
     COLOR_CHURN_FICOU = "#256D85"
-    COLOR_CHURN_SAIU = "#F15A59"
+    COLOR_CHURN_SAIU = "#9b0d27"
 
     st.plotly_chart(px.histogram(
         df_cancelados, x="Tenure Months", nbins=20,
