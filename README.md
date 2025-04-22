@@ -32,7 +32,7 @@ The model is served using a FastAPI backend for real-time predictions.
 
 2. Run the API:
    ```bash
-   uvicorn main:app --reload
+   uvicorn fastAPI.main:app --reload
    ```
 
 3. Access the Swagger docs at:
@@ -85,7 +85,7 @@ An interactive frontend built with Streamlit allows users to input customer data
 
 2. Launch the app:
    ```bash
-   streamlit run app.py
+   streamlit run fastAPI\app.py
    ```
 
 #### App Features
